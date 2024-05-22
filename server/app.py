@@ -14,9 +14,15 @@ migrate = Migrate(app, db)
 
 db.init_app(app)
 
-@app.route('/messages')
+# GET /messages: returns an array of all messages as JSON, ordered by created_at in ascending order.
+# POST /messages: creates a new message with a body and username from params, and returns the newly created post as JSON.
+# PATCH /messages/<int:id>: updates the body of the message using params, and returns the updated message as JSON.
+# DELETE /messages/<int:id>: deletes the message from the database.
+
+@app.get('/messages')
 def messages():
-    return ''
+    messages = Message.query.order_by(Message.created_at.asc()).all()
+    return [m.to_dict() for m in messages], 200
 
 @app.route('/messages/<int:id>')
 def messages_by_id(id):
